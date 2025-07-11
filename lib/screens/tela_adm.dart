@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'conexao_provider.dart';
+import '../providers/conexao_provider.dart';
 import 'dialogos/dialogo_nova_conexao.dart';
 
 class TelaAdm extends StatelessWidget {

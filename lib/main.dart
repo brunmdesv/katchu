@@ -8,7 +8,7 @@ import 'screens/dialogos/dialogo_tipo_usuario.dart';
 import 'screens/tela_selecao_tipo_usuario.dart';
 import 'screens/historico_conexoes.dart';
 import 'package:provider/provider.dart';
-import 'screens/conexao_provider.dart';
+import 'providers/conexao_provider.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
 
