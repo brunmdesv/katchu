@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
 import 'styles.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
 
@@ -28,19 +29,46 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ThemeMode _themeMode = ThemeMode.light;
+  ThemeMode _themeMode = ThemeMode.dark;
   TipoUsuario? _tipoUsuario;
 
-  void _setThemeMode(ThemeMode mode) {
+  @override
+  void initState() {
+    super.initState();
+    _carregarPreferencias();
+  }
+
+  Future<void> _carregarPreferencias() async {
+    final prefs = await SharedPreferences.getInstance();
+    final tema = prefs.getString('tema') ?? 'escuro';
+    final tipo = prefs.getString('tipoUsuario');
     setState(() {
-      _themeMode = mode;
+      _themeMode = tema == 'claro' ? ThemeMode.light : ThemeMode.dark;
+      if (tipo == 'adm') {
+        _tipoUsuario = TipoUsuario.administrador;
+      } else if (tipo == 'padrao') {
+        _tipoUsuario = TipoUsuario.padrao;
+      }
     });
   }
 
-  void _setTipoUsuario(TipoUsuario tipo) {
+  void _setThemeMode(ThemeMode mode) async {
+    setState(() {
+      _themeMode = mode;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tema', mode == ThemeMode.light ? 'claro' : 'escuro');
+  }
+
+  void _setTipoUsuario(TipoUsuario tipo) async {
     setState(() {
       _tipoUsuario = tipo;
     });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'tipoUsuario',
+      tipo == TipoUsuario.administrador ? 'adm' : 'padrao',
+    );
   }
 
   @override
@@ -104,7 +132,15 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/': (context) {
             if (_tipoUsuario == null) {
-              return TelaSelecaoTipoUsuario(onSelecionado: _setTipoUsuario);
+              return TelaSelecaoTipoUsuario(
+                onSelecionado: (tipo) {
+                  _setTipoUsuario(tipo);
+                  // Após selecionar, força rebuild para não mostrar mais a tela de seleção
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {});
+                  });
+                },
+              );
             } else if (_tipoUsuario == TipoUsuario.administrador) {
               return TelaAdm(menu: _buildMenu(context));
             } else {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../styles.dart';
 import '../widgets/card_padrao.dart';
+import 'package:provider/provider.dart';
+import '../providers/conexao_provider.dart';
 
 class TelaUser extends StatefulWidget {
   final Widget menu;
@@ -13,6 +15,7 @@ class TelaUser extends StatefulWidget {
 class _TelaUserState extends State<TelaUser> {
   final TextEditingController _codigoController = TextEditingController();
   String? _codigoConectado;
+  bool _carregando = false;
 
   @override
   void dispose() {
@@ -20,12 +23,32 @@ class _TelaUserState extends State<TelaUser> {
     super.dispose();
   }
 
-  void _conectar() {
+  Future<void> _conectar() async {
     final codigo = _codigoController.text;
     if (codigo.length == 4) {
       setState(() {
-        _codigoConectado = codigo;
+        _carregando = true;
       });
+      // Aqui você pode obter o usuarioPadraoId do usuário logado, por enquanto usarei um valor fixo para exemplo
+      final usuarioPadraoId = 'usuario_demo';
+      final sucesso = await context
+          .read<ConexaoProvider>()
+          .conectarComoUsuarioPadrao(codigo, usuarioPadraoId);
+      setState(() {
+        _carregando = false;
+      });
+      if (sucesso) {
+        setState(() {
+          _codigoConectado = codigo;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Conectado com sucesso!')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('PIN inválido ou não encontrado.')),
+        );
+      }
     }
   }
 
@@ -80,8 +103,17 @@ class _TelaUserState extends State<TelaUser> {
                   ),
                   const SizedBox(height: AppSpaces.xl),
                   ElevatedButton(
-                    onPressed: _conectar,
-                    child: const Text('Conectar'),
+                    onPressed: _carregando ? null : _conectar,
+                    child: _carregando
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Conectar'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: context.primaryColor,
                       foregroundColor: Colors.white,
