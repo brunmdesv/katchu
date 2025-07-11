@@ -6,7 +6,7 @@ import 'widgets/menu.dart';
 import 'screens/tela_configuracoes.dart';
 import 'screens/dialogos/dialogo_tipo_usuario.dart';
 import 'screens/tela_selecao_tipo_usuario.dart';
-import 'screens/historico_conexoes.dart';
+import 'screens/tela_hist_locs.dart';
 import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
 import 'styles.dart';
