@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "849479428488",
+    "project_id": "katchu-4faa0",
+    "storage_bucket": "katchu-4faa0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849479428488:android:2f13d4dc2f4032fcaf323d",
+        "android_client_info": {
+          "package_name": "com.example.katchu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKGplsTfntiC4bqz7lp8S8Z_YLu7slKEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

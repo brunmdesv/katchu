@@ -10,10 +10,13 @@ import 'screens/tela_hist_locs.dart';
 import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
 import 'styles.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
