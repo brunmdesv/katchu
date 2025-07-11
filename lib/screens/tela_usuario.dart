@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../styles.dart';
+import '../widgets/card_padrao.dart';
 
 class TelaUser extends StatefulWidget {
   final Widget menu;
@@ -37,54 +39,84 @@ class _TelaUserState extends State<TelaUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Painel de Usuário')),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text('Painel de Usuário', style: context.titleStyle),
+        backgroundColor: context.primaryColor,
+        elevation: 0,
+      ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  // Lógica para ativar permissões
-                },
-                child: const Text('Ativar permissões'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(48),
-                ),
-              ),
-              const SizedBox(height: 32),
-              if (_codigoConectado == null) ...[
-                TextField(
-                  controller: _codigoController,
-                  maxLength: 4,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Código (4 dígitos)',
-                    border: OutlineInputBorder(),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpaces.xl),
+          child: CardPadrao(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Lógica para ativar permissões
+                  },
+                  icon: const Icon(Icons.lock_open),
+                  label: const Text('Ativar permissões'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.secondary,
+                    foregroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(44),
+                    textStyle: context.bodyStyle,
                   ),
                 ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _conectar,
-                  child: const Text('Conectar'),
-                ),
-              ] else ...[
-                Text(
-                  'Conectado ao código $_codigoConectado',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                const SizedBox(height: AppSpaces.xl),
+                if (_codigoConectado == null) ...[
+                  TextField(
+                    controller: _codigoController,
+                    maxLength: 4,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'Código (4 dígitos)',
+                      border: OutlineInputBorder(),
+                      counterText: '',
+                    ),
+                    style: context.bodyStyle,
                   ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _desconectar,
-                  child: const Text('Desconectar'),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                ),
+                  const SizedBox(height: AppSpaces.xl),
+                  ElevatedButton(
+                    onPressed: _conectar,
+                    child: const Text('Conectar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: context.primaryColor,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(44),
+                      textStyle: context.bodyStyle,
+                    ),
+                  ),
+                ] else ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.check_circle,
+                        color: AppColors.success,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text('Conectado ao código ', style: context.bodyStyle),
+                      Text(_codigoConectado!, style: context.codeStyle),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpaces.xl),
+                  ElevatedButton(
+                    onPressed: _desconectar,
+                    child: const Text('Desconectar'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.error,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromHeight(44),
+                      textStyle: context.bodyStyle,
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

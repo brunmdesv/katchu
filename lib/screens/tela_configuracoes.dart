@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'dialogos/dialogo_tema.dart';
 import 'dialogos/dialogo_tipo_usuario.dart';
+import '../styles.dart';
+import '../widgets/card_padrao.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
-
 typedef OnTipoUsuarioChanged = void Function(TipoUsuario);
 
 class TelaConfiguracoes extends StatefulWidget {
@@ -44,7 +45,7 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
             _tipoUsuario = tipo;
           });
           widget.onTipoUsuarioChanged(tipo);
-          Navigator.of(context).pop(); // Fecha a tela de configurações
+          Navigator.of(context).pop();
         },
       ),
     );
@@ -53,33 +54,50 @@ class _TelaConfiguracoesState extends State<TelaConfiguracoes> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Configurações')),
-      body: ListView(
-        children: [
-          ListTile(
-            leading: const Icon(Icons.brightness_6),
-            title: const Text('Muda tema'),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => DialogoTema(
-                  temaAtual: widget.themeMode,
-                  onTemaSelecionado: widget.onThemeChanged,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text('Configurações', style: context.titleStyle),
+        backgroundColor: context.primaryColor,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpaces.xl,
+          vertical: AppSpaces.xl,
+        ),
+        child: CardPadrao(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.brightness_6, color: AppColors.secondary),
+                title: Text('Muda tema', style: context.bodyStyle),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => DialogoTema(
+                      temaAtual: widget.themeMode,
+                      onTemaSelecionado: widget.onThemeChanged,
+                    ),
+                  );
+                },
+              ),
+              const Divider(),
+              ListTile(
+                leading: Icon(Icons.person, color: context.primaryColor),
+                title: Text('Tipo de usuário', style: context.bodyStyle),
+                subtitle: Text(
+                  _tipoUsuario == TipoUsuario.padrao
+                      ? 'Usuário padrão'
+                      : 'Administrador',
+                  style: context.captionStyle,
                 ),
-              );
-            },
+                onTap: _selecionarTipoUsuario,
+              ),
+            ],
           ),
-          ListTile(
-            leading: const Icon(Icons.person),
-            title: const Text('Tipo de usuário'),
-            subtitle: Text(
-              _tipoUsuario == TipoUsuario.padrao
-                  ? 'Usuário padrão'
-                  : 'Administrador',
-            ),
-            onTap: _selecionarTipoUsuario,
-          ),
-        ],
+        ),
       ),
       bottomNavigationBar: widget.menu,
     );

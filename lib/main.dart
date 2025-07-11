@@ -9,6 +9,7 @@ import 'screens/tela_selecao_tipo_usuario.dart';
 import 'screens/historico_conexoes.dart';
 import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
+import 'styles.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
 
@@ -46,15 +47,54 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          brightness: Brightness.light,
+          colorScheme: ColorScheme.light(
+            primary: AppColors.primary,
+            secondary: AppColors.secondary,
+            background: AppColors.backgroundLight,
+            surface: AppColors.surfaceLight,
+            onPrimary: Colors.white,
+            onSecondary: Colors.white,
+            onBackground: AppColors.textPrimaryLight,
+            onSurface: AppColors.textPrimaryLight,
+            error: AppColors.error,
+          ),
+          scaffoldBackgroundColor: AppColors.backgroundLight,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          cardColor: AppColors.surfaceLight,
+          textTheme: const TextTheme(
+            titleLarge: AppTextStyles.titleLight,
+            bodyMedium: AppTextStyles.bodyLight,
+            bodySmall: AppTextStyles.captionLight,
+          ),
         ),
         darkTheme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
-            brightness: Brightness.dark,
+          colorScheme: ColorScheme.dark(
+            primary: AppColors.primary,
+            secondary: AppColors.secondary,
+            background: AppColors.backgroundDark,
+            surface: AppColors.surfaceDark,
+            onPrimary: Colors.white,
+            onSecondary: Colors.white,
+            onBackground: AppColors.textPrimaryDark,
+            onSurface: AppColors.textPrimaryDark,
+            error: AppColors.error,
           ),
-          brightness: Brightness.dark,
+          scaffoldBackgroundColor: AppColors.backgroundDark,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          cardColor: AppColors.surfaceDark,
+          textTheme: const TextTheme(
+            titleLarge: AppTextStyles.titleDark,
+            bodyMedium: AppTextStyles.bodyDark,
+            bodySmall: AppTextStyles.captionDark,
+          ),
         ),
         themeMode: _themeMode,
         initialRoute: '/',
