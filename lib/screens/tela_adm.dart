@@ -1,40 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'conexao_provider.dart';
 import 'dialogos/dialogo_nova_conexao.dart';
 
-class TelaAdm extends StatefulWidget {
+class TelaAdm extends StatelessWidget {
   final Widget menu;
   const TelaAdm({Key? key, required this.menu}) : super(key: key);
 
   @override
-  State<TelaAdm> createState() => _TelaAdmState();
-}
-
-class _TelaAdmState extends State<TelaAdm> {
-  String? _codigoConexao;
-  DateTime? _dataConexao;
-
-  void _criarConexao() async {
-    final codigo = await showDialog<String>(
-      context: context,
-      builder: (context) => const DialogoNovaConexao(),
-    );
-    if (codigo != null && codigo.length == 4) {
-      setState(() {
-        _codigoConexao = codigo;
-        _dataConexao = DateTime.now();
-      });
-    }
-  }
-
-  void _desconectar() {
-    setState(() {
-      _codigoConexao = null;
-      _dataConexao = null;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final conexao = context.watch<ConexaoProvider>();
     return Scaffold(
       appBar: AppBar(title: const Text('Painel de Administração')),
       body: Column(
@@ -42,7 +17,7 @@ class _TelaAdmState extends State<TelaAdm> {
         children: [
           const Center(child: Text('Bem-vindo ao Painel de Administração!')),
           const SizedBox(height: 32),
-          if (_codigoConexao != null && _dataConexao != null) ...[
+          if (conexao.codigo != null && conexao.dataHora != null) ...[
             Center(
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
@@ -73,7 +48,7 @@ class _TelaAdmState extends State<TelaAdm> {
                             ),
                             const Spacer(),
                             Text(
-                              _codigoConexao!,
+                              conexao.codigo!,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -93,11 +68,11 @@ class _TelaAdmState extends State<TelaAdm> {
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              '${_dataConexao!.day.toString().padLeft(2, '0')}/'
-                              '${_dataConexao!.month.toString().padLeft(2, '0')}/'
-                              '${_dataConexao!.year} '
-                              '${_dataConexao!.hour.toString().padLeft(2, '0')}:'
-                              '${_dataConexao!.minute.toString().padLeft(2, '0')}',
+                              '${conexao.dataHora!.day.toString().padLeft(2, '0')}/'
+                              '${conexao.dataHora!.month.toString().padLeft(2, '0')}/'
+                              '${conexao.dataHora!.year} '
+                              '${conexao.dataHora!.hour.toString().padLeft(2, '0')}:'
+                              '${conexao.dataHora!.minute.toString().padLeft(2, '0')}',
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey,
@@ -105,7 +80,7 @@ class _TelaAdmState extends State<TelaAdm> {
                             ),
                             const Spacer(),
                             TextButton.icon(
-                              onPressed: _desconectar,
+                              onPressed: () => conexao.desconectar(),
                               icon: const Icon(
                                 Icons.link_off,
                                 size: 16,
@@ -138,14 +113,22 @@ class _TelaAdmState extends State<TelaAdm> {
           ],
         ],
       ),
-      floatingActionButton: _codigoConexao == null
+      floatingActionButton: conexao.codigo == null
           ? FloatingActionButton.extended(
-              onPressed: _criarConexao,
+              onPressed: () async {
+                final codigo = await showDialog<String>(
+                  context: context,
+                  builder: (context) => const DialogoNovaConexao(),
+                );
+                if (codigo != null && codigo.length == 4) {
+                  context.read<ConexaoProvider>().criarConexao(codigo);
+                }
+              },
               icon: const Icon(Icons.add),
               label: const Text('Criar conexão'),
             )
           : null,
-      bottomNavigationBar: widget.menu,
+      bottomNavigationBar: menu,
     );
   }
 }

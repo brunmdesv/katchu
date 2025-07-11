@@ -7,6 +7,8 @@ import 'screens/tela_configuracoes.dart';
 import 'screens/dialogos/dialogo_tipo_usuario.dart';
 import 'screens/tela_selecao_tipo_usuario.dart';
 import 'screens/historico_conexoes.dart';
+import 'package:provider/provider.dart';
+import 'screens/conexao_provider.dart';
 
 typedef OnTemaSelecionado = void Function(ThemeMode);
 
@@ -39,42 +41,46 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        brightness: Brightness.light,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.deepPurple,
+    return ChangeNotifierProvider(
+      create: (_) => ConexaoProvider(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          brightness: Brightness.light,
+        ),
+        darkTheme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.deepPurple,
+            brightness: Brightness.dark,
+          ),
           brightness: Brightness.dark,
         ),
-        brightness: Brightness.dark,
-      ),
-      themeMode: _themeMode,
-      initialRoute: '/',
-      routes: {
-        '/': (context) {
-          if (_tipoUsuario == null) {
-            return TelaSelecaoTipoUsuario(onSelecionado: _setTipoUsuario);
-          } else if (_tipoUsuario == TipoUsuario.administrador) {
-            return TelaAdm(menu: _buildMenu(context));
-          } else {
-            return TelaUser(menu: _buildMenu(context));
-          }
+        themeMode: _themeMode,
+        initialRoute: '/',
+        routes: {
+          '/': (context) {
+            if (_tipoUsuario == null) {
+              return TelaSelecaoTipoUsuario(onSelecionado: _setTipoUsuario);
+            } else if (_tipoUsuario == TipoUsuario.administrador) {
+              return TelaAdm(menu: _buildMenu(context));
+            } else {
+              return TelaUser(menu: _buildMenu(context));
+            }
+          },
+          '/adm': (context) => TelaAdm(menu: _buildMenu(context)),
+          '/user': (context) => TelaUser(menu: _buildMenu(context)),
+          '/configuracoes': (context) => TelaConfiguracoes(
+            themeMode: _themeMode,
+            onThemeChanged: _setThemeMode,
+            menu: _buildMenu(context),
+            tipoUsuario: _tipoUsuario!,
+            onTipoUsuarioChanged: _setTipoUsuario,
+          ),
+          '/historico': (context) =>
+              HistoricoConexoes(menu: _buildMenu(context)),
         },
-        '/adm': (context) => TelaAdm(menu: _buildMenu(context)),
-        '/user': (context) => TelaUser(menu: _buildMenu(context)),
-        '/configuracoes': (context) => TelaConfiguracoes(
-          themeMode: _themeMode,
-          onThemeChanged: _setThemeMode,
-          menu: _buildMenu(context),
-          tipoUsuario: _tipoUsuario!,
-          onTipoUsuarioChanged: _setTipoUsuario,
-        ),
-        '/historico': (context) => HistoricoConexoes(menu: _buildMenu(context)),
-      },
+      ),
     );
   }
 
