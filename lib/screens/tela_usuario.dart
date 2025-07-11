@@ -3,6 +3,7 @@ import '../styles.dart';
 import '../widgets/card_padrao.dart';
 import 'package:provider/provider.dart';
 import '../providers/conexao_provider.dart';
+import '../providers/localizacao_provider.dart';
 
 class TelaUser extends StatefulWidget {
   final Widget menu;
@@ -29,7 +30,28 @@ class _TelaUserState extends State<TelaUser> {
       setState(() {
         _carregando = true;
       });
-      // Aqui você pode obter o usuarioPadraoId do usuário logado, por enquanto usarei um valor fixo para exemplo
+
+      // Verificar permissões de localização primeiro
+      final localizacaoProvider = context.read<LocalizacaoProvider>();
+      final permissoesOk = await localizacaoProvider.verificarPermissoes();
+
+      if (!permissoesOk) {
+        setState(() {
+          _carregando = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              localizacaoProvider.erro ??
+                  'Permissões de localização necessárias',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Conectar ao adm
       final usuarioPadraoId = 'usuario_demo';
       final sucesso = await context
           .read<ConexaoProvider>()
@@ -37,6 +59,7 @@ class _TelaUserState extends State<TelaUser> {
       setState(() {
         _carregando = false;
       });
+
       if (sucesso) {
         setState(() {
           _codigoConectado = codigo;

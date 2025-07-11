@@ -9,6 +9,7 @@ import 'screens/tela_selecao_tipo_usuario.dart';
 import 'screens/tela_hist_locs.dart';
 import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
+import 'providers/localizacao_provider.dart';
 import 'styles.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,8 +74,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ConexaoProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ConexaoProvider()),
+        ChangeNotifierProvider(create: (_) => LocalizacaoProvider()),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -157,7 +161,7 @@ class _MyAppState extends State<MyApp> {
             onTipoUsuarioChanged: _setTipoUsuario,
           ),
           '/historico': (context) =>
-              HistoricoConexoes(menu: _buildMenu(context)),
+              HistoricoLocalizacoes(menu: _buildMenu(context)),
         },
       ),
     );

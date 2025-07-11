@@ -37,7 +37,8 @@ dependencies:
   provider: ^6.1.2
   firebase_core: ^3.15.1
   cloud_firestore: ^5.6.11
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.5.3
+  geolocator: ^14.0.2
 
 dev_dependencies:
   flutter_test:
