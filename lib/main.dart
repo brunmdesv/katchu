@@ -7,6 +7,7 @@ import 'screens/tela_configuracoes.dart';
 import 'screens/dialogos/dialogo_tipo_usuario.dart';
 import 'screens/tela_selecao_tipo_usuario.dart';
 import 'screens/tela_hist_locs.dart';
+import 'screens/tela_detalhes_loc.dart';
 import 'package:provider/provider.dart';
 import 'providers/conexao_provider.dart';
 import 'providers/localizacao_provider.dart';
@@ -162,6 +163,15 @@ class _MyAppState extends State<MyApp> {
           ),
           '/historico': (context) =>
               HistoricoLocalizacoes(menu: _buildMenu(context)),
+          '/detalhes-localizacao': (context) {
+            final args =
+                ModalRoute.of(context)!.settings.arguments
+                    as Map<String, dynamic>;
+            return TelaDetalhesLoc(
+              localizacaoId: args['localizacaoId'],
+              menu: _buildMenu(context),
+            );
+          },
         },
       ),
     );

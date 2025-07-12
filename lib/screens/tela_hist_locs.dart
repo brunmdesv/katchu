@@ -269,10 +269,28 @@ class HistoricoLocalizacoes extends StatelessWidget {
                     style: context.captionStyle,
                   )
                 : null,
-            trailing: Text(
-              '±${(localizacao['precisao'] ?? 0).toStringAsFixed(1)}m',
-              style: context.captionStyle,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '±${(localizacao['precisao'] ?? 0).toStringAsFixed(1)}m',
+                  style: context.captionStyle,
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: AppColors.textSecondaryLight,
+                ),
+              ],
             ),
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                '/detalhes-localizacao',
+                arguments: {'localizacaoId': localizacoes[index].id},
+              );
+            },
           ),
         );
       },
